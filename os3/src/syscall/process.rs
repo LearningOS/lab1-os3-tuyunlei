@@ -1,5 +1,6 @@
-use crate::task::{exit_current_and_run_next, suspend_current_and_run_next};
-use crate::timer::get_time_us;
+use crate::config::MAX_SYSCALL_NUM;
+use crate::task::{exit_current_and_run_next, get_current_task_info, suspend_current_and_run_next, TaskInfo, TaskStatus};
+use crate::timer::{get_time, get_time_ms, get_time_us};
 
 #[repr(C)]
 pub struct TimeVal {
@@ -25,6 +26,13 @@ pub fn sys_get_time(ts: *mut TimeVal, _tz: usize) -> isize {
             sec: us / 1_000_000,
             usec: us % 1_000_000,
         };
+    }
+    0
+}
+
+pub fn sys_task_info(task_info: *mut TaskInfo) -> isize {
+    unsafe {
+        get_current_task_info(task_info);
     }
     0
 }
